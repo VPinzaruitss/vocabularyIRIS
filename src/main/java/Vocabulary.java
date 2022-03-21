@@ -1,4 +1,3 @@
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -23,8 +22,8 @@ class Vocabulary {
         private String entryType;
         private String dataType;
         private String label;
-        private Map descriptions;
-        private Map domainSpecificDescriptions;
+        private Map<String, Object> descriptions;
+        private Map<String, Object> domainSpecificDescriptions;
         private Boolean isGenerated;
         private Boolean generated;
         private String domain;
