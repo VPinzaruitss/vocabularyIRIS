@@ -1,3 +1,5 @@
+package com.itss.irisvoc;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
@@ -20,7 +22,7 @@ public class Main {
 
             Vocabulary deserializedFile = VocabularyService.deserializationFromJson(src);
             VocabularyService.serializationIntoJson(deserializedFile, out);
-        } catch (ParseException | FileNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

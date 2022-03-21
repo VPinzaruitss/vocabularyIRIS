@@ -1,3 +1,5 @@
+package com.itss.irisvoc;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NonNull;
 
