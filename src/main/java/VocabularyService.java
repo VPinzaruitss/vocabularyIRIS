@@ -3,6 +3,7 @@ import lombok.NonNull;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -21,7 +22,10 @@ public class VocabularyService {
     }
 
     // path - file with JSON
-    public static Vocabulary deserializationFromJson(@NonNull Path path) {
+    public static Vocabulary deserializationFromJson(@NonNull Path path) throws FileNotFoundException {
+        if (!Files.exists(path))
+            throw new FileNotFoundException();
+
         Vocabulary vocabulary = null;
 
         try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {

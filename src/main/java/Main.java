@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class Main {
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) {
         Options options = getCommandOptions();
 
         CommandLine cmd;
@@ -19,14 +19,10 @@ public class Main {
             Path out = Paths.get(cmd.getOptionValue("o"));
             Path src = Paths.get(cmd.getOptionValue("s"));
 
-            if (!Files.exists(src))
-                throw new FileNotFoundException();
-
             Vocabulary deserializedFile = VocabularyService.deserializationFromJson(src);
             VocabularyService.serializationIntoJson(deserializedFile, out);
-        } catch (ParseException e) {
+        } catch (ParseException | FileNotFoundException e) {
             e.printStackTrace();
-            System.err.println("Parsing failed");
         }
     }
 
