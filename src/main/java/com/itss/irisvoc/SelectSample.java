@@ -65,7 +65,9 @@ public class SelectSample {
 
                             // create identical but with entryType equals 'property'
 //                                    entries.add(entryBuilderByOld(entry));
-                            listForAdd.add(entryBuilderByOld(entry));
+                            Vocabulary.Entries newEntry = entryBuilderByOld(entry);
+                            listForAdd.add(newEntry);
+                            entriesCache.put(text, newEntry);
                         }
                     }
 
