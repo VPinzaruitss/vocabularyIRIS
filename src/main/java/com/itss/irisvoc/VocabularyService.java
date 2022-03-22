@@ -1,5 +1,6 @@
 package com.itss.irisvoc;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NonNull;
 
@@ -14,6 +15,11 @@ import java.nio.file.Path;
 public class VocabularyService {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
+    static {
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+//        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    }
+
     // path - output file
     public static void serializationIntoJson(Vocabulary vocabulary, @NonNull Path path) {
         try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
@@ -24,18 +30,12 @@ public class VocabularyService {
     }
 
     // path - file with JSON
-    public static Vocabulary deserializationFromJson(@NonNull Path path) throws FileNotFoundException {
+    public static Vocabulary deserializationFromJson(@NonNull Path path) throws Exception {
         if (!Files.exists(path))
             throw new FileNotFoundException();
 
-        Vocabulary vocabulary = null;
-
         try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
-            vocabulary = objectMapper.readValue(reader, Vocabulary.class);
-        } catch (IOException e) {
-            e.printStackTrace();
+            return objectMapper.readValue(reader, Vocabulary.class);
         }
-
-        return vocabulary;
     }
 }
