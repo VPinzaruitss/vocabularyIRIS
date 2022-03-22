@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class Main {
+
     public static void main(String[] args) {
         Options options = getCommandOptions();
 
@@ -21,7 +22,7 @@ public class Main {
             final Path out = Paths.get(cmd.getOptionValue("o"));
             final Path src = Paths.get(cmd.getOptionValue("s"));
 
-            T24Standalone.run(TAFJ_HOME, SelectSample.MainSubTest.class, args);
+            T24Standalone.run(TAFJ_HOME, SelectSample.class, args);
 
 //            Vocabulary deserializedFile = VocabularyService.deserializationFromJson(src);
 //            VocabularyService.serializationIntoJson(deserializedFile, out);
