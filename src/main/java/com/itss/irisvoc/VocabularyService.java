@@ -3,7 +3,6 @@ package com.itss.irisvoc;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itss.irisvoc.Vocabulary.Entries;
-import lombok.NonNull;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -20,20 +19,19 @@ public class VocabularyService {
 
     static {
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-//        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     // path - output file
-    public static void serializationIntoJson(Vocabulary vocabulary, @NonNull Path path) {
+    public static void serializationIntoJson(Vocabulary vocabulary, Path path) {
         try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
-            objectMapper.writeValue(writer, vocabulary);
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(writer, vocabulary);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     // path - file with JSON
-    public static Vocabulary deserializationFromJson(@NonNull Path path) throws Exception {
+    public static Vocabulary deserializationFromJson(Path path) throws Exception {
         if (!Files.exists(path))
             throw new FileNotFoundException();
 
@@ -42,13 +40,13 @@ public class VocabularyService {
         }
     }
 
-    public static Map<String, Entries> getEntriesCache(Vocabulary vocabulary) {
+    public static Map<String, Entries> getEntriesCache(Vocabulary vocabulary, String entryType) {
 
         Map<String, Entries> entries = new HashMap<>();
 
         for (Entries entry : vocabulary.getEntries()) {
 
-            if (!entry.getEntryType().equals("property")) {
+            if (!entry.getEntryType().equals(entryType)) {
                 continue;
             }
 
