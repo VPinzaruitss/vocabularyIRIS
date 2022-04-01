@@ -11,8 +11,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
+
+import static com.itss.irisvoc.Main.*;
 
 public class VocabularyService {
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -40,19 +40,23 @@ public class VocabularyService {
         }
     }
 
-    public static Map<String, Entries> getEntriesCache(Vocabulary vocabulary, String entryType) {
-
-        Map<String, Entries> entries = new HashMap<>();
+    public static void getEntriesCache(Vocabulary vocabulary) {
 
         for (Entries entry : vocabulary.getEntries()) {
+            EntryType entryType = EntryType.valueOf(entry.getEntryType());
 
-            if (!entry.getEntryType().equals(entryType)) {
-                continue;
+            switch (entryType) {
+                case property:
+                    entriesCacheByProperty.put(entry.getKey(), entry);
+                    break;
+                case verb:
+                    entriesCacheByVerb.put(entry.getKey(), entry);
+                    break;
+                case resource:
+                    entriesCacheByResource.put(entry.getKey(), entry);
+                    break;
+                default:
             }
-
-            entries.put(entry.getKey(), entry);
         }
-
-        return entries;
     }
 }

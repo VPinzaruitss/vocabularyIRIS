@@ -11,7 +11,6 @@ class Vocabulary {
     private String domain;
     private List<Entries> entries;
 
-
     @Data
     static class Entries {
         private String key;
