@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.Map;
 
 @Data
-class Vocabulary {
+public class Vocabulary {
     private String domain;
     private List<Entries> entries;
 
     @Data
-    static class Entries {
+    public static class Entries {
         private String key;
         private String description;
         private String plural;

@@ -1,5 +1,7 @@
-package com.itss.irisvoc;
+package com.itss.irisvoc.handlers;
 
+import com.itss.irisvoc.EntryType;
+import com.itss.irisvoc.Vocabulary;
 import com.itss.t24runtime.T24Runtime;
 
 import java.util.Map;

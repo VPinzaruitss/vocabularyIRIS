@@ -1,5 +1,7 @@
 package com.itss.irisvoc;
 
+import com.itss.irisvoc.handlers.EnquiryHandler;
+import com.itss.irisvoc.handlers.VersionHandler;
 import com.itss.t24runtime.T24Runtime;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
