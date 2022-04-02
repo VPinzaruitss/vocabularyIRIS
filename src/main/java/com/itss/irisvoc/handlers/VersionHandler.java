@@ -58,7 +58,13 @@ public class VersionHandler implements Handler {
         int len = fieldNos.size();
         for (int i = 0; i < len; i++) {
 
-            String text = i < texts.size() ? texts.get(i).toString().replaceAll("[:/ ]", "") : "";
+            String text = i < texts.size() ? texts.get(i).toString() : fieldNos.get(i).toString();
+
+            if (text.equals("")) {
+                text = fieldNos.get(i).toString();
+            }
+
+            text = text.replaceAll("[:/. ]", "");
 
             // create entry with entryType 'property' or update usage
             final String USAGE = "T24_" + id + "_" + fieldNos.get(i);

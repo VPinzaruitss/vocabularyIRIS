@@ -71,8 +71,13 @@ public class EnquiryHandler implements Handler {
         int fieldNamesLen = fieldNames.size();
         for (int i = 0; i < fieldNamesLen; i++) {
 
-            String text = (i < labels.size() ? labels.get(i).toString() : fieldNames.get(i).toString())
-                    .replaceAll("[:/ ]", "");
+            String text = i < labels.size() ? labels.get(i).toString() : fieldNames.get(i).toString();
+
+            if (text.equals("")) {
+                text = fieldNames.get(i).toString();
+            }
+
+            text = text.replaceAll("[:/. ]", "");
 
             // create entry with entryType 'property' or update usage
             final String USAGE = "T24_" + id + "_" + fieldNames.get(i);

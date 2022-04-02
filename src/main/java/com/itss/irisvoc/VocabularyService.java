@@ -22,12 +22,9 @@ public class VocabularyService {
     }
 
     // path - output file
-    public static void serializationIntoJson(Vocabulary vocabulary, Path path) {
-        try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+    public static void serializationIntoJson(Vocabulary vocabulary, Path path) throws IOException {
+        BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8);
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(writer, vocabulary);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     // path - file with JSON

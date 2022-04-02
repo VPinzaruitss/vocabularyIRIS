@@ -12,9 +12,14 @@ import static com.itss.irisvoc.Main.listForAdd;
 
 public interface Handler {
 
+//    TELLER,CBVTMS.API.CBD.1.0.0
+
     // get all records in table and check with pattern
     default void handleTable(T24Runtime runtime, String tableName, Pattern pattern) {
         for (String recId : runtime.select(tableName)) {
+//
+//                if (!recId.equals("TELLER,CBVTMS.API.CBD.1.0.0"))
+//                    continue;
 
             Matcher matcher = pattern.matcher(recId);
             if (!matcher.matches()) {
@@ -46,8 +51,9 @@ public interface Handler {
         Vocabulary.Entries newEntry = new Vocabulary.Entries();
 
         newEntry.setKey(key);
-        if (!USAGE.equals(""))
+        if (!USAGE.equals("")) {
             newEntry.getUsage().add(USAGE);
+        }
         newEntry.setEntryType(entryType);
 
         return newEntry;

@@ -40,6 +40,8 @@ public class Main {
 
             Vocabulary vocabulary = VocabularyService.deserializationFromJson(src);
 
+//            Vocabulary vocabulary = new Vocabulary();
+
             // fill up maps
             VocabularyService.getEntriesCache(vocabulary);
 
