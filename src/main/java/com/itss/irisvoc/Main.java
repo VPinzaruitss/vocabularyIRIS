@@ -8,6 +8,7 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -17,9 +18,8 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class Main {
-
-    private static final Pattern VERSION_RECORD_PATTERN = Pattern.compile("^.*,.*\\.API\\..*\\.\\d+\\.\\d+\\.\\d+$");
-    private static final Pattern ENQUIRY_RECORD_PATTERN = Pattern.compile("^.*\\.API\\..*\\.\\d+\\.\\d+\\.\\d+");
+    private static final Pattern VERSION_RECORD_PATTERN = Pattern.compile("^.*,.*\\.API\\.?.*\\.\\d+\\.\\d+\\.\\d+$");
+    private static final Pattern ENQUIRY_RECORD_PATTERN = Pattern.compile("^.*\\.API\\.?.*\\.\\d+\\.\\d+\\.\\d+$");
 
     public static final List<Vocabulary.Entries> listForAdd = new ArrayList<>();
 
@@ -31,38 +31,47 @@ public class Main {
 
         Options options = Standalone.getCommandOptions();
 
+        Path out = null;
         CommandLine cmd;
         try {
+
             cmd = new DefaultParser().parse(options, args);
-
-            final Path src = Paths.get(cmd.getOptionValue("s"));
-            final Path out = Paths.get(cmd.getOptionValue("o"));
-
-            Vocabulary vocabulary = VocabularyService.deserializationFromJson(src);
-
-//            Vocabulary vocabulary = new Vocabulary();
-
-            // fill up maps
-            VocabularyService.getEntriesCache(vocabulary);
-
-            try (T24Runtime runtime = T24Runtime.getNotInitialized()) {
-
-                new VersionHandler().handleTable(runtime, "F.VERSION", VERSION_RECORD_PATTERN);
-                new EnquiryHandler().handleTable(runtime, "F.ENQUIRY", ENQUIRY_RECORD_PATTERN);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            vocabulary.getEntries().addAll(Main.listForAdd);
-
-            VocabularyService.serializationIntoJson(vocabulary, out);
+            out = Paths.get(cmd.getOptionValue("o"));
 
         } catch (Exception e) {
+
             e.printStackTrace();
 
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("Main", options);
+
+        }
+
+        Vocabulary vocabulary = new Vocabulary();
+
+        Vocabulary.Entries partyDomain = new Vocabulary.Entries();
+        partyDomain.setKey("party");
+        partyDomain.setEntryType("domain");
+        vocabulary.getEntries().add(partyDomain);
+
+        try (T24Runtime runtime = T24Runtime.getNotInitialized()) {
+
+            new VersionHandler().handleTable(runtime, "F.VERSION", VERSION_RECORD_PATTERN);
+            new EnquiryHandler().handleTable(runtime, "F.ENQUIRY", ENQUIRY_RECORD_PATTERN);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        vocabulary.getEntries().addAll(Main.listForAdd);
+
+        try {
+            VocabularyService.serializationIntoJson(vocabulary, out);
+        } catch (IOException e) {
+
+            e.printStackTrace();
+            System.exit(1);
+
         }
     }
 }
