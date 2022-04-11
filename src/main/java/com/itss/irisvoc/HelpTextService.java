@@ -49,6 +49,12 @@ public class HelpTextService {
 
         @Override
         public void endElement(String uri, String localName, String qName) {
+            // when present 'field' but not present 'desc'
+            if (lastElementName.equals("field") && !qName.equals("field") && !qName.equals("desc")) {
+                elements.put(field, "");
+                field = null;
+            }
+
             if ((field != null && !field.isEmpty()) && qName.equals("desc")) {
                 while (descContent.size() != 0) {
                     desc.append(descContent.removeFirst());
