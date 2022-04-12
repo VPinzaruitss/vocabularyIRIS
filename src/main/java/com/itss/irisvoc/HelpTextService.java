@@ -1,98 +1,86 @@
 package com.itss.irisvoc;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.helpers.DefaultHandler;
+import lombok.SneakyThrows;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 
 public class HelpTextService {
-    private static final Map<String, String> elements = new HashMap<>();
+    private static final Map<String, HelpText> elements = new HashMap<>();
 
-    public static void main(String[] args) throws ParserConfigurationException, SAXException, IOException {
-        SAXParserFactory factory = SAXParserFactory.newInstance();
-        SAXParser parser = factory.newSAXParser();
+    public static void main(String[] args) throws IOException {
 
-        XMLHandler handler = new XMLHandler();
-//        try {
-            parser.parse(new File("C:\\Users\\Kirill\\Desktop\\test.xml"), handler);
-//        } catch (SAXParseException ignore) {}
+        String fileName = "C:\\Users\\Kirill\\Desktop\\HELP.TEXT";
 
-        for (Map.Entry<String, String> entry : elements.entrySet()) {
-            System.out.println(entry.getKey() + " : " + entry.getValue());
+        Files.walk(Paths.get(fileName))
+                .filter(Files::isRegularFile)
+                .filter(path -> path.toString().toLowerCase().endsWith("xml"))
+                .forEach(HelpTextService::parse);
+
+//        parse(Paths.get("C:\\Users\\Kirill\\Desktop\\test.xml"));
+
+        for (Map.Entry<String, HelpText> entry : elements.entrySet()) {
+            System.out.println(entry.getKey() + " : " + entry.getValue().getDesc());
         }
     }
 
-    private static class XMLHandler extends DefaultHandler {
-        private String lastElementName, field;
-        private StringBuilder desc = new StringBuilder();
-        private boolean isDescElement;
-        private final LinkedList<String> descContent = new LinkedList<>();
+    @SneakyThrows
+    private static void parse(Path path) {
+        String fileContent = String.join("", Files.readAllLines(path));
+        String[] splitFileByFieldTag = fileContent.split("<field>");
 
-        @Override
-        public void startElement(String uri, String localName, String qName, Attributes attributes) {
-            lastElementName = qName;
+        for (String str : splitFileByFieldTag) {
+            String field = getField(str);
+            String desc = getDesc(str);
 
-            // enter to desc tag
-            if (lastElementName.equals("desc")) {
-                isDescElement = true;
+            if (!field.isEmpty()) {
+                HelpText helpText = new HelpText(field, desc);
+
+                // key = (file name + field)
+                String key = path
+                        .getFileName()
+                        .toString()
+                        .substring(0, path.getFileName().toString().length() - 4) + "*" + field;
+
+                elements.put(key, helpText);
             }
-        }
-
-        @Override
-        public void endElement(String uri, String localName, String qName) {
-            // when present 'field' but not present 'desc'
-            if (lastElementName.equals("field") && !qName.equals("field") && !qName.equals("desc")) {
-                elements.put(field, "");
-                field = null;
-            }
-
-            if ((field != null && !field.isEmpty()) && qName.equals("desc")) {
-                while (descContent.size() != 0) {
-                    desc.append(descContent.removeFirst());
-                }
-
-                elements.put(field, desc.toString());
-
-                // clear for new element
-                field = null;
-                desc = new StringBuilder();
-
-                // exit from desc tag
-                isDescElement = false;
-            }
-        }
-
-        @Override
-        public void characters(char[] ch, int start, int length) {
-            String information = new String(ch, start, length);
-
-            information = information.replaceAll("\n", "").trim();
-
-            if (!information.isEmpty()) {
-                if (lastElementName.equals("field")) {
-                    field = information;
-                }
-            }
-
-            if (isDescElement) {
-                // collect all information between desc tag (include another tags)
-                descContent.add(information);
-            }
-        }
-
-        @Override
-        public void fatalError(SAXParseException e) throws SAXException {
-            super.fatalError(e);
         }
     }
 
+    private static String getField(String str) {
+        return str.substring(0, str.indexOf('<'))
+                .replaceAll("<.*?>|\n|\t|\\s([\\s])+", "")
+                .replaceAll("&lt;", "<")
+                .replaceAll("&gt;", ">")
+                .replaceAll("&amp;", "&");
+    }
+
+    private static String getDesc(String str) {
+        int startIndex= str.indexOf("<desc>");
+        int endIndex = str.indexOf("</desc>");
+
+        String descContent;
+
+        if (startIndex < 0 && endIndex < 0) {
+            return "";
+        }
+
+        if (startIndex <= 0 && endIndex >= 0) {
+            descContent = str.substring(0, endIndex);
+        } else if (endIndex <= 0) {
+            descContent = str.substring(startIndex);
+        } else {
+            descContent = str.substring(startIndex, endIndex);
+        }
+
+        return descContent
+                .replaceAll("<.*?>|\n|\t|\\s([\\s])+", "")
+                .replaceAll("&lt;", "<")
+                .replaceAll("&gt;", ">")
+                .replaceAll("&amp;", "&");
+    }
 }
