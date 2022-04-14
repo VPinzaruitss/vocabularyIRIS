@@ -19,9 +19,9 @@ public class EnquiryHandler implements Handler {
             Pattern.compile("^.*\\.API(\\.([^.]+))*\\.\\d+\\.\\d+\\.\\d+$");
 
     @Override
-    public void handleRecord(T24Runtime runtime, String recId, String tableName) {
+    public void handleRecord(T24Runtime runtime, String recId, String screen) {
 
-        Record record = runtime.readRecord(tableName, recId);
+        Record record = runtime.readRecord(screen, recId);
 
         List<Record.Field> selLabel = record.get("SEL.LABEL").asListVm();
         List<Record.Field> fieldNames = record.get("FIELD.NAME").asListVm();
@@ -34,7 +34,7 @@ public class EnquiryHandler implements Handler {
             String resourceName = matcherResource.group(2);
 
             Vocabulary.Entries entry = entriesCacheByResource.get(resourceName);
-            handleEntry(entry, EntryType.resource, resourceName, entriesCacheByResource);
+            handleEntry(entry, EntryType.resource, resourceName, entriesCacheByResource, null, null);
         }
 
         // create entry with entryType 'verb' or update usage
@@ -45,7 +45,7 @@ public class EnquiryHandler implements Handler {
                 String verbName = verbs[0];
 
                     Vocabulary.Entries entry = entriesCacheByVerb.get(verbName);
-                    handleEntry(entry, EntryType.verb, verbName, entriesCacheByVerb);
+                    handleEntry(entry, EntryType.verb, verbName, entriesCacheByVerb, null, null);
             }
 
         }
@@ -54,9 +54,11 @@ public class EnquiryHandler implements Handler {
 
             String text = strings.toString().replaceAll(" ", "");
 
+            String USAGE = "T24_" + recId;
+
             // create entry with entryType 'property' or update usage
             Vocabulary.Entries entry = entriesCacheByProperty.get(text);
-            handleEntry(entry, EntryType.property, text, entriesCacheByProperty);
+            handleEntry(entry, EntryType.property, text, entriesCacheByProperty, null, USAGE);
 
         }
 
@@ -71,9 +73,11 @@ public class EnquiryHandler implements Handler {
 
             text = text.replaceAll("[:/. ]", "");
 
+            String USAGE = "T24_" + recId;
+
             // create entry with entryType 'property' or update usage
             Vocabulary.Entries entry = entriesCacheByProperty.get(text);
-            handleEntry(entry, EntryType.property, text, entriesCacheByProperty);
+            handleEntry(entry, EntryType.property, text, entriesCacheByProperty, null, USAGE);
 
         }
 

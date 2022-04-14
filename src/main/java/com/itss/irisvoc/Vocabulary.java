@@ -19,7 +19,7 @@ public class Vocabulary {
         private String plural;
         private List<String> insteadOf;
         private List<String> links;
-        private List<String> usage;
+        private List<String> usage = new ArrayList<>();
         private String entryType;
         private String dataType;
         private String label;

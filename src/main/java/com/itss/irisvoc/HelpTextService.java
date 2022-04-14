@@ -15,13 +15,11 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class HelpTextService {
-    private static final Map<String, String> elements = new HashMap<>();
+    public static final Map<String, String> elements = new HashMap<>();
 
-    public static void main(String[] args) throws IOException {
+    public static void getDescriptions() throws IOException {
 
-        // todo add path as a parameter
-
-        Path fileName = Paths.get("C:\\Users\\Kirill\\Desktop\\vocabularyIRIS\\Transact.HelpText.R21.zip");
+        Path fileName = Paths.get("Transact.HelpText.R21.zip");
 
         try (ZipInputStream zip = new ZipInputStream(Files.newInputStream(fileName))) {
             ZipEntry entry;
@@ -52,9 +50,9 @@ public class HelpTextService {
             }
         }
 
-        for (Map.Entry<String, String> entry : elements.entrySet()) {
-            System.out.println(entry.getKey() + " : " + entry.getValue());
-        }
+//        for (Map.Entry<String, String> entry : elements.entrySet()) {
+//            System.out.println(entry.getKey() + " : " + entry.getValue());
+//        }
     }
 
     @SneakyThrows
@@ -108,7 +106,7 @@ public class HelpTextService {
     }
 
     @SneakyThrows
-    public static String readAll(InputStream is) {
+    private static String readAll(InputStream is) {
         if (is == null) {
             return "";
         }

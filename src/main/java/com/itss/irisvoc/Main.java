@@ -27,7 +27,7 @@ public class Main {
     public static Map<String, Vocabulary.Entries> entriesCacheByResource = new HashMap<>();
     public static Map<String, Vocabulary.Entries> entriesCacheByVerb = new HashMap<>();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         Options options = Standalone.getCommandOptions();
 
@@ -53,6 +53,8 @@ public class Main {
         partyDomain.setKey("party");
         partyDomain.setEntryType("domain");
         vocabulary.getEntries().add(partyDomain);
+
+        HelpTextService.getDescriptions();
 
         try (T24Runtime runtime = T24Runtime.getNotInitialized()) {
 
