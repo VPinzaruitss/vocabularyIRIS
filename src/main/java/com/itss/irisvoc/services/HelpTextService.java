@@ -1,4 +1,4 @@
-package com.itss.irisvoc;
+package com.itss.irisvoc.services;
 
 import lombok.SneakyThrows;
 

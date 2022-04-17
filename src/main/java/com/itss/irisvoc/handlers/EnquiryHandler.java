@@ -1,7 +1,7 @@
 package com.itss.irisvoc.handlers;
 
 import com.itss.irisvoc.EntryType;
-import com.itss.irisvoc.Vocabulary;
+import com.itss.irisvoc.entity.Vocabulary;
 import com.itss.t24runtime.Record;
 import com.itss.t24runtime.T24Runtime;
 import lombok.NoArgsConstructor;
@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.itss.irisvoc.Main.*;
-
 @NoArgsConstructor
 public class EnquiryHandler implements Handler {
+
+    public static final Pattern ENQUIRY_RECORD_PATTERN = Pattern.compile("^.*\\.API\\.?.*\\.\\d+\\.\\d+\\.\\d+$");
 
     private static final Pattern ENQUIRY_PATTERN_RESOURCE =
             Pattern.compile("^.*\\.API(\\.([^.]+))*\\.\\d+\\.\\d+\\.\\d+$");
@@ -73,7 +73,7 @@ public class EnquiryHandler implements Handler {
 
             text = text.replaceAll("[:/. ]", "");
 
-            String USAGE = "T24_" + recId;
+            String USAGE = "T24_" + recId + "_" + fieldNames.get(i);
 
             // create entry with entryType 'property' or update usage
             Vocabulary.Entries entry = entriesCacheByProperty.get(text);

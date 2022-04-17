@@ -1,4 +1,4 @@
-package com.itss.irisvoc;
+package com.itss.irisvoc.entity;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Data;

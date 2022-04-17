@@ -37,7 +37,6 @@ public class Standalone {
         Options options = new Options();
 
         options.addRequiredOption("h", "home", true, "TAFJ home path");
-        options.addRequiredOption("o", "out", true, "Output folder");
 
         return options;
     }

@@ -1,16 +1,22 @@
 package com.itss.irisvoc.handlers;
 
 import com.itss.irisvoc.EntryType;
-import com.itss.irisvoc.Vocabulary;
+import com.itss.irisvoc.entity.Vocabulary;
 import com.itss.t24runtime.T24Runtime;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.itss.irisvoc.Main.listForAdd;
-
 public interface Handler {
+    List<Vocabulary.Entries> listForAdd = new ArrayList<>();
+
+    Map<String, Vocabulary.Entries> entriesCacheByProperty = new HashMap<>();
+    Map<String, Vocabulary.Entries> entriesCacheByResource = new HashMap<>();
+    Map<String, Vocabulary.Entries> entriesCacheByVerb = new HashMap<>();
 
     // get all records in table and check with pattern
     default void handleTable(T24Runtime runtime, String screen, Pattern pattern) {

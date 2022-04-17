@@ -1,8 +1,8 @@
 package com.itss.irisvoc.handlers;
 
 import com.itss.irisvoc.EntryType;
-import com.itss.irisvoc.HelpTextService;
-import com.itss.irisvoc.Vocabulary;
+import com.itss.irisvoc.entity.Vocabulary;
+import com.itss.irisvoc.services.HelpTextService;
 import com.itss.t24runtime.Record;
 import com.itss.t24runtime.T24Runtime;
 
@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.itss.irisvoc.Main.*;
-
 public class VersionHandler implements Handler {
+
+    public static final Pattern VERSION_RECORD_PATTERN = Pattern.compile("^.*,.*\\.API\\.?.*\\.\\d+\\.\\d+\\.\\d+$");
 
     private static final Pattern VERSION_PATTERN_RESOURCE =
             Pattern.compile("^(.*),.*\\.API(\\.([^.]+))*\\.\\d+\\.\\d+\\.\\d+$");
@@ -66,7 +66,7 @@ public class VersionHandler implements Handler {
 
             text = text.replaceAll("[:/. ]", "");
 
-            String USAGE = "T24_" + recId;
+            String USAGE = "T24_" + recId + "_" + fieldNos.get(i);
 
             // create entry with entryType 'property' or update usage
             Vocabulary.Entries entry = entriesCacheByProperty.get(text);
